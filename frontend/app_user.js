@@ -1,5 +1,5 @@
 // === App Usuario con Login/Registro, carrito y reservas ===
-const API = ""; // ¡CORREGIDO! Ahora usa ruta relativa para el despliegue en Render
+const API = "http://localhost:5000";
 const S = (n) => `S/ ${Number(n || 0).toFixed(2)}`;
 
 let carrito = [];

@@ -1,5 +1,5 @@
 // === Admin Panel JS con cambio de estados ===
-const API_BASE = ""; // ¡CORREGIDO! Ahora usa ruta relativa para el despliegue en Render
+const API_BASE = "http://localhost:5000";
 const S = (n) => `S/ ${Number(n || 0).toFixed(2)}`;
 
 document.addEventListener("DOMContentLoaded", () => {
