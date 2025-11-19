@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cafetería TECSUP - Usuario</title>
+
+  <!-- Fuente opcional (recomendado) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tu hoja de estilos -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body { font-family:"Poppins", sans-serif; }
+
+    /* Temporizador SOLO dentro del modal */
+    #timer {
+      font-size: 20px;
+      font-weight: bold;
+      color: #005dd1;
+      background: #E5F1FF;
+      border: 2px solid #004ec4;
+      border-radius: 10px;
+      padding: 8px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    #timer.warning {
+      color: red;
+      background: #FFE4E4;
+      border-color: red;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink { 50% {opacity:0.3;} }
+
+    .modal {
+      display:none; position:fixed; top:0; left:0;
+      width:100%; height:100%; background:rgba(0,0,0,.6);
+      justify-content:center; align-items:center; z-index:999;
+    }
+
+    .modal-content {
+      background:white; padding:25px; width:380px;
+      border-radius:15px; text-align:center;
+      animation: fadeIn .3s ease;
+    }
+
+    @keyframes fadeIn { from{opacity:0; transform:scale(.9);} to{opacity:1;} }
+
+    table { width:100%; margin-top:10px; border-collapse:collapse; }
+    th, td { padding:6px; border-bottom:1px solid #ddd; }
+
+    .modal-actions button {
+      margin:10px; padding:10px 20px; border:none;
+      border-radius:8px; font-weight:bold; cursor:pointer;
+    }
+
+    #confirmar-modal { background:#0A8A43; color:white; }
+    #cancelar-modal { background:#C62828; color:white; }
+
+    #descargarQR, #whatsappQR { 
+      display:none; margin-top:10px; width:100%;
+      background:#0077ff; padding:10px; border:none;
+      color:white; border-radius:6px;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header con login -->
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
+    <h1 style="margin:0">Cafetería TECSUP - Usuario</h1>
+    <div>
+      <span id="welcome" class="badge" style="display:none;margin-right:8px"></span>
+      <button id="openAuth" class="btn">Login / Registro</button>
+      <button id="logoutBtn" class="btn" style="display:none;background:#64748b">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <!-- Productos -->
+  <div class="container">
+    <h2>Productos Disponibles</h2>
+    <div id="productos"></div>
+  </div>
+
+  <!-- Carrito -->
+  <div class="container" id="carrito">
+    <h2>Carrito de Compras</h2>
+    <ul id="carrito-lista"></ul>
+    <div class="row" style="justify-content:center;margin-top:6px">
+      <button id="reservar-btn" class="btn">Reservar</button>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+
+      <div id="timer">⏳ Tiempo restante: 01:30</div>
+
+      <h2>Confirmar Pedido 🛍</h2>
+      <input id="nombre-usuario" type="text" placeholder="Tu nombre..." style="width:90%; padding:10px;">
+
+      <h3>Resumen:</h3>
+      <table id="tabla-resumen">
+        <thead><tr><th>Producto</th><th>Precio</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <h3>Total: <span id="total-final">S/ 0.00</span></h3>
+
+      <canvas id="qrCanvas" style="display:none; margin:15px auto;"></canvas>
+      <button id="descargarQR">⬇ Descargar QR</button>
+      <button id="whatsappQR">📤 Enviar por WhatsApp</button>
+
+      <div class="modal-actions">
+        <button id="cancelar-modal">Cancelar</button>
+        <button id="confirmar-modal">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Backdrop -->
+  <div id="authBackdrop" class="modal-backdrop hidden"></div>
+
+  <!-- Modal Auth (tabs bonitos) -->
+  <div id="authModal" class="auth-modal hidden">
+    <div class="auth-card">
+      <button id="closeAuth" class="auth-close" aria-label="Cerrar">×</button>
+
+      <div class="auth-tabs">
+        <button id="tabLogin" class="auth-tab active">Iniciar sesión</button>
+        <button id="tabRegister" class="auth-tab">Crear cuenta</button>
+      </div>
+
+      <div class="auth-panes">
+        <!-- LOGIN -->
+        <form id="loginForm" class="auth-pane active">
+          <div class="auth-field">
+            <label>Correo</label>
+            <input type="email" id="loginCorreo" placeholder="tucorreo@ejemplo.com" required>
+          </div>
+          <div class="auth-field">
+            <label>Contraseña</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="auth-primary">Entrar</button>
+        </form>
+
+        <!-- REGISTRO -->
+        <form id="registerForm" class="auth-pane">
+          <div class="auth-field">
+            <label>Nombre</label>
+            <input type="text" id="regNombre" placeholder="Tu nombre" required>
+          </div>
+          <div class="auth-field">
+            <label>Correo</label>
+            <input type="email" id="regCorreo" placeholder="tucorreo@ejemplo.com" required>
+          </div>
+          <div class="auth-field">
+            <label>Contraseña</label>
+            <input type="password" id="regPassword" placeholder="Crea una contraseña" required>
+          </div>
+          <button type="submit" class="auth-primary">Crear cuenta</button>
+        </form>
+      </div>
+
+      <p class="auth-terms">Al continuar, aceptas las condiciones del servicio.</p>
+    </div>
+  </div>
+
+  <!-- Lógica de la vista -->
+  <script src="app_user.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+</body>
+</html>

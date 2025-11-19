@@ -1,0 +1,184 @@
+/* === Tema Tech Celeste + Blanco === */
+:root{
+  --bg:#f5fbff;
+  --panel:#ffffff;
+  --celeste:#00bcd4;
+  --celeste-600:#00a0b5;
+  --celeste-50:#e6faff;
+  --text:#0f172a;
+  --muted:#5b6b82;
+  --border:#e6eef9;
+  --shadow:0 12px 30px rgba(16,172,190,.08);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+
+body{
+  margin:0;
+  font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #eafaff 0%, transparent 60%),
+    radial-gradient(1200px 600px at 90% 10%, #f0feff 0%, transparent 60%),
+    var(--bg);
+  color:var(--text);
+}
+
+.container{max-width:1100px;margin:40px auto;padding:0 20px}
+
+h1,h2{margin:12px 0 22px;text-align:center;letter-spacing:.2px}
+h1{font-weight:800;font-size:clamp(28px,4vw,40px)}
+h2{font-weight:700;font-size:clamp(20px,3vw,28px);color:var(--muted)}
+
+#productos,#reservas{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+  align-items:start;
+}
+
+/* Tarjetas de producto y reserva */
+.card,.producto,.reserva{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:22px;
+  box-shadow:var(--shadow);
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+  animation:fadeUp .4s both;
+}
+.card:hover,.producto:hover,.reserva:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 40px rgba(0,0,0,.08);
+  border-color:#d5edf4;
+}
+.producto h3,.reserva h3{margin:0 0 8px}
+.producto p,.reserva p{margin:6px 0;color:var(--muted)}
+
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 10px;border-radius:999px;
+  background:var(--celeste-50);color:var(--celeste-600);
+  font-weight:700;font-size:12px;border:1px solid #c7f5ff;
+}
+
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* Botones */
+button,.btn{
+  padding:10px 16px;border:0;border-radius:12px;
+  background:linear-gradient(180deg,var(--celeste),var(--celeste-600));
+  color:#fff;font-weight:700;cursor:pointer;
+  box-shadow:0 8px 18px rgba(0,188,212,.25);
+  transition:transform .08s ease,filter .2s ease,box-shadow .2s ease;
+}
+button:hover,.btn:hover{filter:brightness(1.05);box-shadow:0 10px 24px rgba(0,188,212,.32)}
+button:active,.btn:active{transform:translateY(1px)}
+
+/* Formularios */
+form{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+input[type="text"],input[type="number"]{
+  width:clamp(180px,25vw,260px);padding:10px 12px;border-radius:12px;
+  border:1px solid var(--border);background:#fff;outline:none;
+  transition:border-color .2s ease,box-shadow .2s ease;
+}
+input[type="text"]:focus,input[type="number"]:focus{
+  border-color:#b6ecf6;box-shadow:0 0 0 6px rgba(0,188,212,.08);
+}
+
+/* Carrito */
+#carrito{margin-top:30px}
+#carrito-lista{
+  list-style:none;padding:0;margin:12px 0 18px;display:grid;gap:8px;
+}
+#carrito-lista li{
+  background:#fff;border:1px solid var(--border);border-radius:12px;
+  padding:10px 12px;display:flex;justify-content:space-between;align-items:center;
+}
+
+/* Detalle de items dentro de la reserva */
+.reserva .items{display:grid;gap:6px;margin-top:8px}
+.reserva .items .item{display:flex;justify-content:space-between;gap:10px}
+
+/* Estados vacíos */
+.empty{background:#fff;border:1px dashed var(--border);border-radius:16px;
+  text-align:center;padding:28px;color:var(--muted)}
+
+/* Animación de entrada */
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Responsive */
+@media (max-width:520px){.container{margin:20px auto}}
+/* Badges por estado */
+.badge.pendiente   { background:#fff7ed; color:#b45309; border-color:#fde3c7; }
+.badge.preparando  { background:#eef6ff; color:#1d4ed8; border-color:#dbeafe; }
+.badge.listo       { background:#ecfeff; color:#0e7490; border-color:#cffafe; }
+.badge.entregado   { background:#f0fdf4; color:#166534; border-color:#dcfce7; }
+.badge.cancelado   { background:#fef2f2; color:#b91c1c; border-color:#fee2e2; }
+/* Modal simple */
+.hidden{display:none}
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:saturate(120%) blur(3px);z-index:30;
+}
+.modal{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:31;
+}
+.modal .card{width:100%;max-width:440px}
+.modal form{display:grid;gap:12px;margin:12px 0}
+.modal input{width:100%}
+/* ===== Auth Modal (glass + tabs) ===== */
+.auth-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:50}
+.auth-modal.hidden{display:none}
+.modal-backdrop{position:fixed;inset:0;background:rgba(10,40,60,.35);backdrop-filter:blur(4px);z-index:40}
+.modal-backdrop.hidden{display:none}
+
+.auth-card{
+  width:min(96vw,540px);
+  background:rgba(255,255,255,.72);
+  backdrop-filter:saturate(140%) blur(10px);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:22px 20px;
+  box-shadow:0 24px 60px rgba(0,0,0,.12);
+  animation:fadeUp .25s ease-out both;
+}
+.auth-close{
+  position:absolute;right:14px;top:10px;
+  background:#94a3b8;color:#fff;border:0;border-radius:10px;
+  width:34px;height:34px;font-size:20px;cursor:pointer;
+}
+
+.auth-tabs{
+  display:flex;gap:8px;justify-content:center;align-items:center;
+  background:var(--celeste-50);
+  border:1px solid #c7f5ff;border-radius:999px;
+  padding:6px;margin-bottom:16px;
+}
+.auth-tab{
+  padding:10px 16px;border-radius:999px;border:0;cursor:pointer;
+  background:transparent;color:#0f172a;font-weight:700;opacity:.8;
+}
+.auth-tab.active{
+  background:linear-gradient(180deg,var(--celeste),var(--celeste-600));
+  color:#fff;box-shadow:0 10px 20px rgba(0,188,212,.28);
+  opacity:1;
+}
+
+.auth-panes{position:relative}
+.auth-pane{display:grid;gap:12px}
+.auth-pane:not(.active){display:none}
+
+.auth-field label{font-size:12px;color:var(--muted)}
+.auth-field input{
+  width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;
+  background:#fff;outline:none;transition:border-color .2s, box-shadow .2s;
+}
+.auth-field input:focus{border-color:#b6ecf6;box-shadow:0 0 0 6px rgba(0,188,212,.08)}
+
+.auth-primary{
+  padding:12px 16px;border:0;border-radius:12px;cursor:pointer;
+  background:linear-gradient(180deg,var(--celeste),var(--celeste-600));
+  color:#fff;font-weight:800;letter-spacing:.2px;
+  box-shadow:0 10px 20px rgba(0,188,212,.28);
+}
+.auth-terms{margin:10px 4px 0;color:var(--muted);text-align:center;font-size:12px}

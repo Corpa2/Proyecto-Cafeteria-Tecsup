@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cafetería TECSUP - Zona Administrador</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Zona Administrador</h1>
+    <a href="qr_scanner_admin.html" target="_blank" class="btn">Abrir escáner QR</a>
+
+
+<!-- Formulario para agregar productos -->
+<h2>Agregar Producto</h2>
+<form id="agregar-producto">
+  <input type="text" id="nombre" placeholder="Nombre" required>
+  <input type="text" id="descripcion" placeholder="Descripción" required>
+  <input type="number" id="precio" placeholder="Precio" required step="0.01">
+  <input type="text" id="categoria" placeholder="Categoría" required>
+  <button type="submit">Agregar Producto</button>
+</form>
+
+
+
+    <!-- Mostrar productos -->
+    <h2>Lista de Productos</h2>
+    <div id="productos"></div>
+
+    <!-- Mostrar reservas -->
+<h2>Reservas en Cola</h2>
+
+<div class="row" id="toolbar-reservas" style="justify-content:center; margin-bottom:12px">
+  <select id="filtro-estado">
+    <option value="">Todas</option>
+    <option>Pendiente</option>
+    <option>Preparando</option>
+    <option>Listo</option>
+    <option>Entregado</option>
+    <option>Cancelado</option>
+  </select>
+  <button id="refrescar-reservas">Refrescar</button>
+</div>
+
+<div id="reservas"></div>
+
+
+  <script src="app_admin.js"></script>
+</body>
+</html>
