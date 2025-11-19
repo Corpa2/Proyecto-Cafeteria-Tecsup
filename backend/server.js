@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path'); // <<-- [CAMBIO 1] AÑADIDO: Importar el módulo 'path'
 require('dotenv').config();
 
 const app = express();
@@ -321,15 +322,6 @@ app.delete('/reserva/:id', async (req, res) => {
   }
 });
 
-// ---------- Utilidades ----------
-app.get('/', (_req, res) => res.json({ ok: true, name: 'TECSUP Cafetería API' }));
-app.get('/health', (_req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
-
-// ---------- Start ----------
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
-
-
 //  ENDPOINTS PARA ESCÁNER QR
 // ===============================
 
@@ -355,10 +347,25 @@ app.put('/reserva/codigo/:codigo/entregado', async (req, res) => {
   res.json({ mensaje: 'Pedido marcado como ENTREGADO', reserva });
 });
 
-const path = require('path');
+// ---------- Utilidades ----------
+// app.get('/', (_req, res) => res.json({ ok: true, name: 'TECSUP Cafetería API' })); <<-- [CAMBIO 2] ELIMINADO: Esta ruta API interceptaba el index.
+app.get('/health', (_req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
+
+
+// ----------------------------------------------------------------------
+// ---------- 🔑 Lógica para servir el Frontend (DEBE IR AL FINAL) 🔑 ----------
+// ----------------------------------------------------------------------
+
+// 1. Servir los archivos estáticos de la carpeta 'frontend' (CSS, JS, imágenes)
+// La ruta es '../frontend' porque server.js está en 'backend/'
 app.use(express.static(path.join(__dirname, '../frontend')));
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index_user.html'));
+
+// 2. Servir la página principal (index_user.html) para la ruta raíz y cualquier otra ruta no definida (catch-all)
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/index_user.html'));
 });
-// ===============================
-//  INICIAR SERVIDOR
+
+
+// ---------- Start ----------
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
