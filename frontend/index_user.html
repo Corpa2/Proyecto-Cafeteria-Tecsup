@@ -83,8 +83,20 @@
 
   <!-- Productos -->
   <div class="container">
-    <h2>Productos Disponibles</h2>
-    <div id="productos"></div>
+<div class="productos-header">
+  <h2>Productos disponibles</h2>
+
+  <div class="filtro-categoria-wrapper">
+    <label for="filtro-categoria">Filtrar por categoría:</label>
+    <select id="filtro-categoria">
+      <option value="todas">Todas las categorías</option>
+      <!-- Las opciones reales se llenan desde JS -->
+    </select>
+  </div>
+</div>
+
+<div id="productos"></div>
+
   </div>
 
   <!-- Carrito -->

@@ -3,6 +3,7 @@ const API = "https://proyecto-cafeteria-tecsup-1.onrender.com";
 const S = (n) => `S/ ${Number(n || 0).toFixed(2)}`;
 
 let carrito = [];
+let productosCache = [];
 //
 // --- Temporizador & QR ---
 let tiempoRestante = 90; // segundos (1:30)
@@ -146,34 +147,92 @@ function renderCart() {
 }
 
 async function loadProductos() {
-  const cont = document.getElementById('productos');
-  cont.innerHTML = '';
+  const cont = document.getElementById("productos");
+  const filtroSelect = document.getElementById("filtro-categoria");
+  if (!cont) return;
+
+  cont.innerHTML = '<p class="loading">Cargando productos...</p>';
+
   try {
     const r = await fetch(`${API}/productos`);
     const data = await r.json();
+
     if (!Array.isArray(data) || data.length === 0) {
-      cont.innerHTML = `<div class="empty">No hay productos disponibles.</div>`;
+      cont.innerHTML = '<div class="empty">No hay productos disponibles.</div>';
+      if (filtroSelect) {
+        filtroSelect.innerHTML = '<option value="todas">Todas las categorías</option>';
+      }
       return;
     }
-    data.forEach(p => {
-      const card = document.createElement('div');
-      card.className = 'producto';
-      card.innerHTML = `
-        <h3>${escapeHtml(p.nombre)}</h3>
-        <p>${escapeHtml(p.descripcion)}</p>
-        <p>${S(p.precio)}</p>
-        <p class="badge">Categoría: ${escapeHtml(p.categoria)}</p>
-        <button class="btn-agregar">Agregar al Carrito</button>
-      `;
-      card.querySelector('.btn-agregar').addEventListener('click', () => {
-        carrito.push({ nombre: p.nombre, precio: Number(p.precio) });
-        renderCart();
+
+    // Guardamos todos los productos en memoria
+    productosCache = data;
+
+    // Sacamos categorías únicas
+    const categorias = Array.from(
+      new Set(
+        data
+          .map((p) => (p.categoria || '').trim())
+          .filter((c) => c.length > 0)
+      )
+    );
+
+    // Rellenar el <select> de categorías
+    if (filtroSelect) {
+      filtroSelect.innerHTML = '<option value="todas">Todas las categorías</option>';
+      categorias.forEach((cat) => {
+        const opt = document.createElement('option');
+        opt.value = cat;
+        opt.textContent = cat;
+        filtroSelect.appendChild(opt);
       });
-      cont.appendChild(card);
-    });
+    }
+
+    // Mostrar todo por defecto
+    renderProductosFiltrados('todas');
   } catch (e) {
-    cont.innerHTML = `<div class="empty">Error cargando productos.</div>`;
+    console.error(e);
+    cont.innerHTML = '<div class="empty">Error cargando productos.</div>';
   }
+}
+
+function renderProductosFiltrados(categoria) {
+  const cont = document.getElementById("productos");
+  if (!cont) return;
+
+  cont.innerHTML = '';
+
+  const lista = (!categoria || categoria === 'todas')
+    ? productosCache
+    : productosCache.filter(
+        (p) => (p.categoria || '').trim() === categoria
+      );
+
+  if (!lista || lista.length === 0) {
+    cont.innerHTML = '<div class="empty">No hay productos para esta categoría.</div>';
+    return;
+  }
+
+  lista.forEach((p) => {
+    const card = document.createElement('div');
+    card.className = 'producto';
+    card.innerHTML = `
+      <h3>${escapeHtml(p.nombre)}</h3>
+      <p class="descripcion">${escapeHtml(p.descripcion)}</p>
+      <div class="producto-footer">
+        <span class="precio">${S(p.precio)}</span>
+        <span class="badge-categoria">${escapeHtml(p.categoria || 'General')}</span>
+      </div>
+      <button class="btn btn-agregar">Agregar al carrito</button>
+    `;
+
+    card.querySelector('.btn-agregar').addEventListener('click', () => {
+      carrito.push({ nombre: p.nombre, precio: Number(p.precio) });
+      renderCart();
+    });
+
+    cont.appendChild(card);
+  });
 }
 
 // --------- App init ---------
@@ -339,6 +398,12 @@ if (reservarBtn && modal && tablaResumen && totalFinalSpan && nombreInput && btn
     refreshHeader();
     closeAuth();
   });
+const filtroSelect = document.getElementById('filtro-categoria');
+if (filtroSelect) {
+  filtroSelect.addEventListener('change', (e) => {
+    renderProductosFiltrados(e.target.value);
+  });
+}
 
   // Estado inicial
   refreshHeader();
