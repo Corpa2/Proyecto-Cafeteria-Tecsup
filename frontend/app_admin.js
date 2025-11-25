@@ -1,5 +1,5 @@
 // === Admin Panel JS con cambio de estados ===
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://proyecto-cafeteria-tecsup-1.onrender.com";
 const S = (n) => `S/ ${Number(n || 0).toFixed(2)}`;
 
 document.addEventListener("DOMContentLoaded", () => {

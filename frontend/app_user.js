@@ -1,5 +1,5 @@
 // === App Usuario con Login/Registro, carrito y reservas ===
-const API = "http://localhost:5000";
+const API = "https://proyecto-cafeteria-tecsup-1.onrender.com";
 const S = (n) => `S/ ${Number(n || 0).toFixed(2)}`;
 
 let carrito = [];
